@@ -11,7 +11,23 @@ jobs:
   cleanup:
     if: startsWith(github.head_ref, 'release-')
     runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
+      - name: Verify Vercel secrets
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::error::VERCEL_TOKEN is empty or not set."
+            exit 1
+          fi
+
+      - name: Link Vercel project (CI)
+        run: |
+          mkdir -p .vercel
+          printf '%s\n' "{\"orgId\":\"${VERCEL_ORG_ID}\",\"projectId\":\"${VERCEL_PROJECT_ID}\"}" > .vercel/project.json
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -24,10 +40,7 @@ jobs:
         run: |
           BRANCH_NAME="${{ github.head_ref }}"
           ALIAS_NAME="${BRANCH_NAME}-conman-releases.vercel.app"
-          vercel alias rm "$ALIAS_NAME" --yes --token=${{ secrets.VERCEL_TOKEN }} || true
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel alias rm "$ALIAS_NAME" --yes --token="$VERCEL_TOKEN" || true
 
       - name: Remove Preview Deployments
         uses: actions/github-script@v7

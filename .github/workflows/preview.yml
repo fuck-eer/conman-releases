@@ -10,6 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
@@ -20,6 +21,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Verify Vercel secrets
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::error::VERCEL_TOKEN is empty or not set. Add it under Repo Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+          if [ -z "$VERCEL_ORG_ID" ] || [ -z "$VERCEL_PROJECT_ID" ]; then
+            echo "::error::VERCEL_ORG_ID and VERCEL_PROJECT_ID must be set in Actions secrets."
+            exit 1
+          fi
+
+      - name: Link Vercel project (CI)
+        run: |
+          mkdir -p .vercel
+          printf '%s\n' "{\"orgId\":\"${VERCEL_ORG_ID}\",\"projectId\":\"${VERCEL_PROJECT_ID}\"}" > .vercel/project.json
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -29,15 +46,15 @@ jobs:
         run: npm i -g vercel
 
       - name: Pull Vercel Environment
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
 
       - name: Build
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --token="$VERCEL_TOKEN"
 
       - name: Deploy Preview
         id: deploy
         run: |
-          URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          URL=$(vercel deploy --prebuilt --token="$VERCEL_TOKEN")
           echo "url=$URL" >> "$GITHUB_OUTPUT"
 
       - name: Alias Preview Deployment
@@ -45,7 +62,7 @@ jobs:
         run: |
           BRANCH_NAME="${{ github.ref_name }}"
           ALIAS_NAME="${BRANCH_NAME}-conman-releases.vercel.app"
-          vercel alias ${{ steps.deploy.outputs.url }} "$ALIAS_NAME" --token=${{ secrets.VERCEL_TOKEN }}
+          vercel alias "${{ steps.deploy.outputs.url }}" "$ALIAS_NAME" --token="$VERCEL_TOKEN"
           echo "alias=https://$ALIAS_NAME" >> "$GITHUB_OUTPUT"
 
       - name: Find Associated Pull Request
