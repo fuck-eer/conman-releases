@@ -17,6 +17,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Prefers extracting repeated UI patterns into small, reusable components
 - Mouse-tracking tilt should use window-level `mousemove`, not container-scoped
 - Overflowing elements should clip at viewport/screen edge, not at parent container boundary
+- Prefer server actions over API route handlers for form mutations; keep route handlers only for external/admin endpoints
+- Footer should be a separate snap section with `snap-end` alignment, not merged into the CTA section
 
 ## Learned Workspace Facts
 
@@ -34,4 +36,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - `DownloadForm` component (`src/components/download-form.tsx`) — extracted download card with email input
 - `useMediaQuery` hook at `src/hooks/use-media-query.ts` using `useSyncExternalStore`
 - CTA section layout: form left (40%), image absolute-positioned overflowing right, clipped at viewport via `overflow-x-hidden` on `<main>`
+- Supabase PostgreSQL backend; Drizzle ORM tables: `beta_users` (email-gated beta) + `config` (key/value settings)
+- `registerBetaUser` server action in `src/app/actions.ts` — email gate with slot limits and waitlist
+- API routes: `GET /api/releases` (cached GitHub proxy), `POST /api/notify-waitlist` (admin Bearer-token protected)
+- GitHub release fetching via `src/lib/github.ts` with 10-minute in-memory TTL cache
+- `detectPlatform()` utility at `src/lib/platform.ts` — OS detection via `navigator.userAgent`
+- `Footer` component (`src/components/footer.tsx`) — 4-column grid: brand, product links, resources, legal
+- Privacy Policy at `src/app/privacy/page.tsx`, Terms of Service at `src/app/terms/page.tsx`
+- GitHub repo: `fuck-eer/conman-releases` (used for releases API and issue links)
+- `useSyncExternalStore` snapshots must return a cached/stable reference to avoid infinite re-render loops
 - Google Fonts may fail during build due to network; this is environmental, not a code error
