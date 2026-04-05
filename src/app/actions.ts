@@ -91,6 +91,13 @@ export async function registerBetaUser(
 		};
 	} catch (err) {
 		console.error("Register error:", err);
-		return { status: "error", error: "Something went wrong. Please try again." };
+		const detail =
+			process.env.NODE_ENV === "development" && err instanceof Error
+				? `: ${err.message}`
+				: "";
+		return {
+			status: "error",
+			error: `Something went wrong${detail}. Please try again.`,
+		};
 	}
 }

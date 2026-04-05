@@ -1,13 +1,17 @@
 import { SectionHeading } from "@/components/section-heading";
 import { TestimonialCard } from "@/components/testimonial-card";
-import { testimonials } from "@/data/testimonials";
+import { getTestimonials } from "@/lib/testimonials";
 
-export function TestimonialsSection() {
-  const rows = [
-    testimonials.slice(0, 5),
-    testimonials.slice(5, 10),
-    testimonials.slice(10, 15),
-  ];
+export async function TestimonialsSection() {
+  const testimonials = await getTestimonials();
+
+  if (testimonials.length === 0) return null;
+
+  const perRow = 5;
+  const rows = Array.from(
+    { length: Math.ceil(testimonials.length / perRow) },
+    (_, i) => testimonials.slice(i * perRow, i * perRow + perRow),
+  );
 
   return (
     <section className="snap-section mx-auto flex w-full max-w-7xl flex-col justify-start px-4 py-6 pt-10 sm:px-6 lg:px-8">
@@ -24,19 +28,19 @@ export function TestimonialsSection() {
               key={rowIndex}
               className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
             >
-              {row.map((testimonial, i) => (
+              {row.map((testimonial) => (
                 <TestimonialCard
-                  key={`${rowIndex}-${i}`}
+                  key={testimonial.id}
                   handle={testimonial.handle}
                   text={testimonial.text}
-                  avatarUrl={testimonial.avatarUrl}
+                  avatarUrl={testimonial.avatarUrl ?? undefined}
                 />
               ))}
             </div>
           ))}
         </div>
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-background to-transparent" />
       </div>
     </section>
   );

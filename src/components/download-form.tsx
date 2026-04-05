@@ -4,6 +4,7 @@ import { useState, useSyncExternalStore, useTransition, type FormEvent } from "r
 import { detectPlatform, type Platform, type PlatformInfo } from "@/lib/platform";
 import type { PlatformDownloads } from "@/lib/github";
 import { registerBetaUser } from "@/app/actions";
+import { BlobCard } from "@/components/blob-card";
 
 const EMPTY_SUB = () => () => {};
 const DEFAULT_PLATFORM: PlatformInfo = { platform: "windows", label: "Windows" };
@@ -97,7 +98,8 @@ export function DownloadForm({ version: initialVersion }: DownloadFormProps) {
 	const links = downloads ? getLinksForPlatform(platform, downloads) : [];
 
 	return (
-		<div className="w-fit min-w-[400px] rounded-xl border border-border bg-card/50 p-6 sm:p-8">
+		<BlobCard seed={99} className="w-fit min-w-[400px]">
+		<div className="relative w-full h-full rounded-xl border border-border bg-card/50 backdrop-blur-md p-6 sm:p-8">
 			<p className="text-sm text-muted-foreground">Download for</p>
 			<h3 className="mt-1 font-heading text-3xl tracking-wide text-foreground">
 				{platformLabel}
@@ -185,5 +187,6 @@ export function DownloadForm({ version: initialVersion }: DownloadFormProps) {
 				</form>
 			)}
 		</div>
+		</BlobCard>
 	);
 }

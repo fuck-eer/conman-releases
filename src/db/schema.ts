@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid, index, boolean } from "drizzle-orm/pg-core";
 
 export const betaUsers = pgTable(
 	"beta_users",
@@ -22,4 +22,15 @@ export const betaUsers = pgTable(
 export const config = pgTable("config", {
 	key: text("key").primaryKey(),
 	value: text("value").notNull(),
+});
+
+export const testimonials = pgTable("testimonials", {
+	id: uuid("id").defaultRandom().primaryKey(),
+	handle: text("handle").notNull(),
+	text: text("text").notNull(),
+	avatarUrl: text("avatar_url"),
+	visible: boolean("visible").notNull().default(true),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.defaultNow()
+		.notNull(),
 });

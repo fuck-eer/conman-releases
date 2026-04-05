@@ -1,13 +1,33 @@
+"use client";
+
 import { SectionHeading } from "@/components/section-heading";
 import { FeatureCard } from "@/components/feature-card";
 import { features } from "@/data/features";
+import {
+  LukewarmSessionsIllustration,
+  MultiCliIllustration,
+  SessionThreadsIllustration,
+  InputComposerIllustration,
+  DashboardPanelsIllustration,
+  ParallelTasksIllustration,
+} from "@/components/feature-illustrations";
+import type { ComponentType } from "react";
+
+const ILLUSTRATIONS: ComponentType<{ hovered: boolean }>[] = [
+  LukewarmSessionsIllustration,
+  MultiCliIllustration,
+  SessionThreadsIllustration,
+  InputComposerIllustration,
+  DashboardPanelsIllustration,
+  ParallelTasksIllustration,
+];
 
 export function FeaturesSection() {
   return (
     <section className="snap-section mx-auto flex w-full max-w-7xl flex-col justify-start py-6 px-4 sm:px-6 lg:px-8">
       <SectionHeading
         title="What do we offer"
-        subtitle="Features that make you day a little easier. These are the things you can expect out of the box"
+        subtitle="Features that make your day a little easier. These are the things you can expect out of the box"
         subSection
       />
 
@@ -15,8 +35,10 @@ export function FeaturesSection() {
         {features.map((feature, i) => (
           <FeatureCard
             key={i}
+            index={i}
             title={feature.title}
             description={feature.description}
+            illustration={ILLUSTRATIONS[i]}
           />
         ))}
       </div>
