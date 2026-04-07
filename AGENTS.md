@@ -19,6 +19,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Overflowing elements should clip at viewport/screen edge, not at parent container boundary
 - Prefer server actions over API route handlers for form mutations; keep route handlers only for external/admin endpoints
 - Footer should be a separate snap section with `snap-end` alignment, not merged into the CTA section
+- Prefers building graphics/illustrations as animated React components rather than static image assets (PNG/GIF)
 
 ## Learned Workspace Facts
 
@@ -34,6 +35,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - `TiltImage` component provides glassmorphic frame + mouse-tracking 3D tilt (`src/components/tilt-image.tsx`)
 - `CtaImage` component (`src/components/cta-image.tsx`) — CTA image with window-level mouse-tracking 3D tilt
 - `DownloadForm` component (`src/components/download-form.tsx`) — extracted download card with email input
+- `BlobCard` component (`src/components/blob-card.tsx`) — reusable wrapper with seeded random blob, mouse-tracking drift, and breathing animation via `motion/react`
 - `useMediaQuery` hook at `src/hooks/use-media-query.ts` using `useSyncExternalStore`
 - CTA section layout: form left (40%), image absolute-positioned overflowing right, clipped at viewport via `overflow-x-hidden` on `<main>`
 - Supabase PostgreSQL backend; Drizzle ORM tables: `beta_users` (email-gated beta) + `config` (key/value settings)

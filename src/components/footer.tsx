@@ -51,7 +51,8 @@ export function Footer() {
                 alt="ConMan"
                 width={120}
                 height={32}
-                className="h-8 w-auto"
+                className="h-8"
+                style={{ width: "auto" }}
               />
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
