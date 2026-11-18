@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Josefin_Sans, Bebas_Neue, Geist_Mono } from "next/font/google";
+import { Navbar } from "@/components/navbar";
+import { GatedBetaBadge } from "@/components/gated-beta-badge";
 import "./globals.css";
+import Aurora from "@/components/aurora";
 
 const josefinSans = Josefin_Sans({
   variable: "--font-josefin-sans",
@@ -21,13 +24,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Conman Releases",
-    template: "%s | Conman Releases",
+    default: "ConMan — Command Center for Autonomous Builds",
+    template: "%s | ConMan",
   },
-  description: "Conman Releases — Landing Page",
+  description:
+    "A lightweight UI for all your CLIs. Manage sessions, inject memory, run parallel tasks — all local-first.",
   openGraph: {
-    title: "Conman Releases",
-    description: "Conman Releases — Landing Page",
+    title: "ConMan — Command Center for Autonomous Builds",
+    description:
+      "A lightweight UI for all your CLIs. Manage sessions, inject memory, run parallel tasks — all local-first.",
     images: ["/images/logo-full.png"],
   },
 };
@@ -43,8 +48,11 @@ export default function RootLayout({
       className={`${josefinSans.variable} ${bebasNeue.variable} ${geistMono.variable} dark h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+      <body className="h-full flex flex-col overflow-hidden bg-background text-foreground">
+        <Aurora />
+        <Navbar />
         {children}
+        <GatedBetaBadge />
       </body>
     </html>
   );
